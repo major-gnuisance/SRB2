@@ -1101,7 +1101,7 @@ void HU_Drawer(void)
 		HU_DrawCrosshair2();
 
 	// draw desynch text
-	if (hu_resynching)
+	/*if (hu_resynching)
 	{
 		static UINT32 resynch_ticker = 0;
 		char resynch_text[14];
@@ -1114,7 +1114,246 @@ void HU_Drawer(void)
 			strcat(resynch_text, ".");
 
 		V_DrawCenteredString(BASEVIDWIDTH/2, 180, V_YELLOWMAP | V_ALLOWLOWERCASE, resynch_text);
+	}*/
+	static UINT32 resynch_ticker = 0;
+	static char *resynch_base_text = "Resynching";
+	char resynch_text[128];
+	static boolean resynch_waiting_text = true;
+	static INT32 resynch_shake = 1;
+	static UINT32 resynch_color = 0;
+
+	resynch_ticker++;
+	INT32 i;
+
+	if (!(resynch_ticker % (5 * TICRATE)))
+	{
+		resynch_waiting_text = true;
+		switch (rand() % 54)
+		{
+		case 0:
+			resynch_base_text = "Resynching";
+			break;
+		case 1:
+			resynch_base_text = "XDXDXDXDXD";
+			resynch_waiting_text = false;
+			break;
+		case 2:
+			resynch_base_text = "Deleting System32";
+			break;
+		case 3:
+			resynch_base_text = "Analysing netgame data";
+			break;
+		case 4:
+			resynch_base_text = "Error 404: netcode not found";
+			resynch_waiting_text = false;
+			break;
+		case 5:
+			if (server)
+				resynch_base_text = "Loading kick message";
+			else
+				resynch_base_text = "Loading title screen";
+			break;
+		case 6:
+			resynch_base_text = "lolz";
+			resynch_waiting_text = false;
+			break;
+		case 7:
+			resynch_base_text = "Preparing for kick";
+			break;
+		case 8:
+			resynch_base_text = "Anonymous has joined the game (node 42)";
+			resynch_waiting_text = false;
+			break;
+		case 9:
+			resynch_base_text = "Missing DLL";
+			resynch_waiting_text = false;
+			break;
+		case 10:
+			resynch_base_text = "Error: cannot find potatoes";
+			resynch_waiting_text = false;
+			break;
+		case 11:
+			resynch_base_text = "Downloading virus";
+			break;
+		case 12:
+			resynch_base_text = "aaaaaaaaaaaaaaaaaaaaaa";
+			resynch_waiting_text = false;
+			break;
+		case 13:
+			resynch_base_text = "....................";
+			break;
+		case 14:
+			if (server)
+				resynch_base_text = "A player has desynched. Press alt+F4 to fix it.";
+			else
+				resynch_base_text = "You have desynched. Press alt+F4 to fix it.";
+			resynch_waiting_text = false;
+			break;
+		case 15:
+			resynch_base_text = "Server will explode in 2:00";
+			resynch_waiting_text = false;
+			break;
+		case 16:
+			if (server)
+				resynch_base_text = "Sending an XD_KICK net command";
+			else
+				resynch_base_text = "Receiving an XD_KICK net command";
+			break;
+		case 17:
+			resynch_base_text = "Resynch intensifies";
+			resynch_waiting_text = false;
+			break;
+		case 18:
+			resynch_base_text = "ReSyNChINg";
+			break;
+		case 19:
+			resynch_base_text = "rEsYnCHInG";
+			break;
+		case 20:
+			if (server)
+				resynch_base_text = "omg ur server is doomed m8";
+			else
+				resynch_base_text = "Oh no! The server is DOOMed";
+			resynch_waiting_text = false;
+			break;
+		case 21:
+			resynch_base_text = "Sample Resynching Message";
+			break;
+		case 22:
+			resynch_base_text = "srb2 hav problem";
+			resynch_waiting_text = false;
+			break;
+		case 23:
+			resynch_base_text = "DUN DUN DUUUUUUUUUUN";
+			resynch_waiting_text = false;
+			break;
+		case 24:
+			resynch_base_text = "ThE gdme sTat3 wa5 cO ruPT3d!";
+			resynch_waiting_text = false;
+			break;
+		case 25:
+			resynch_base_text = "Super Virus Activated";
+			resynch_waiting_text = false;
+			break;
+		case 26:
+			resynch_base_text = "Hardcore Ultimate Mode activated";
+			resynch_waiting_text = false;
+			break;
+		case 27:
+			resynch_base_text = "Problem";
+			resynch_waiting_text = false;
+			break;
+		case 28:
+			resynch_base_text = "Desynch has been fiFATAL ERROR: SYNC FAIL";
+			resynch_waiting_text = false;
+			break;
+		case 29:
+			resynch_base_text = "Unloading loading screen";
+			break;
+		case 30:
+			resynch_base_text = "F4T4L 3RR0R";
+			resynch_waiting_text = false;
+			break;
+		case 31:
+			resynch_base_text = "rip";
+			resynch_waiting_text = false;
+			break;
+		case 32:
+			resynch_base_text = "Sending error report to STJr";
+			break;
+		case 33:
+			resynch_base_text = "LOOOOOOOOOOOOOOL UR SERVER IS DED M8";
+			resynch_waiting_text = false;
+			break;
+		case 34:
+			resynch_base_text = "ow";
+			resynch_waiting_text = false;
+			break;
+		case 35:
+			resynch_base_text = "sry ur server is resync :/";
+			resynch_waiting_text = false;
+			break;
+		case 36:
+			resynch_base_text = "slt cmt sava";
+			resynch_waiting_text = false;
+			break;
+		case 37:
+			resynch_base_text = "RESYNCH OMFG";
+			resynch_waiting_text = false;
+			break;
+		case 38:
+			resynch_base_text = "can add fsonic.wad??";
+			resynch_waiting_text = false;
+			break;
+		case 39:
+			resynch_base_text = "Add hms123311.wad to unlock the game.";
+			resynch_waiting_text = false;
+			break;
+		case 40:
+			resynch_base_text = "You suck";
+			break;
+		case 41:
+			resynch_base_text = "11101011110011111010111000110101110";
+			resynch_waiting_text = false;
+			break;
+		case 42:
+			resynch_base_text = "Please be patient";
+			break;
+		case 43:
+			resynch_base_text = "Pouring cups of tea";
+			break;
+		case 44:
+			resynch_base_text = "Determination.";
+			resynch_waiting_text = false;
+			break;
+		case 45:
+			resynch_base_text = "We hope you enjoy this game! ...wait. :P";
+			resynch_waiting_text = false;
+			break;
+		case 46:
+			resynch_base_text = "Please wait until 2.2 release";
+			break;
+		case 47:
+			resynch_base_text = "yud5xyb_g08rd/kx!shw2fes36jk'yekjs$#s";
+			resynch_waiting_text = false;
+			break;
+		case 48:
+			resynch_base_text = "hop u njoy dis resync like we did makin it";
+			resynch_waiting_text = false;
+			break;
+		case 49:
+			resynch_base_text = "redy for kick?";
+			resynch_waiting_text = false;
+			break;
+		case 50:
+			resynch_base_text = "geeettttttt dunked on!!";
+			resynch_waiting_text = false;
+			break;
+		case 51:
+			resynch_base_text = "Getting dunked on";
+			break;
+		case 52:
+			resynch_base_text = "mlg resync";
+			break;
+		case 53:
+			resynch_base_text = "Resinching";
+			break;
+		}
 	}
+
+	strcpy(resynch_text, resynch_base_text);
+	if (resynch_waiting_text)
+		for (i = 0; i < (resynch_ticker / 16) % 4; i++)
+			strcat(resynch_text, ".");
+
+	if (rand() < RAND_MAX / (TICRATE * 3))
+		resynch_shake = rand() % 17;
+
+	if (!(resynch_ticker % 2))
+		resynch_color = (rand() % 8) << 12;
+
+	if (hu_resynching)
+		V_DrawCenteredString(BASEVIDWIDTH/2 - resynch_shake / 2 + rand() % (resynch_shake + 1), 180 - resynch_shake / 2 + rand() % (resynch_shake + 1), resynch_color | V_ALLOWLOWERCASE, resynch_text);
 }
 
 //======================================================================
