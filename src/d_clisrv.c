@@ -1968,6 +1968,8 @@ static boolean CL_ServerConnectionTicker(boolean viams, const char *tmpsave, tic
 	return true;
 }
 
+static char *lastaddress = NULL; // Address of the last connection
+
 /** Use adaptive send using net_bandwidth and stat.sendbytes
   *
   * \param viams ???
@@ -2042,6 +2044,17 @@ static void CL_ConnectToServer(boolean viams)
 	}
 	SL_ClearServerList(servernode);
 #endif
+
+	// Remember the address of the last connection for the "reconnect" command
+	if (client)
+	{
+		if (lastaddress)
+			free(lastaddress);
+		lastaddress = malloc((strlen(I_GetNodeAddress(servernode)) + 1) * sizeof(char));
+		if (!lastaddress)
+			I_Error("Out of memory!\n");
+		strcpy(lastaddress, I_GetNodeAddress(servernode));
+	}
 
 	do
 	{
@@ -2299,6 +2312,14 @@ static void Command_connect(void)
 	botingame = false;
 	botskin = 0;
 	CL_ConnectToServer(viams);
+}
+
+static void Command_reconnect(void)
+{
+	if (lastaddress)
+		COM_ImmedExecute(va("connect \"%s\"\n", lastaddress));
+	else
+		CONS_Printf(M_GetText("You haven't connected to a game yet.\n"));
 }
 #endif
 
@@ -2844,6 +2865,7 @@ void D_ClientServerInit(void)
 	COM_AddCommand("showbanlist", Command_ShowBan);
 	COM_AddCommand("reloadbans", Command_ReloadBan);
 	COM_AddCommand("connect", Command_connect);
+	COM_AddCommand("reconnect", Command_reconnect);
 	COM_AddCommand("nodes", Command_Nodes);
 #ifdef PACKETDROP
 	COM_AddCommand("drop", Command_Drop);
