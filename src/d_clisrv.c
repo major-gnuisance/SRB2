@@ -3745,7 +3745,7 @@ FILESTAMP
 				if (cv_resynchattempts.value && resynch_score[node] <= (unsigned)cv_resynchattempts.value*250)
 				{
 					if (cv_blamecfail.value)
-						CONS_Printf(M_GetText("Synch failure at tic %u for player %d (%s); expected %hd, got %hd\n"),
+						CONS_Printf(M_GetText("\x82Synch failure at tic %u for player %d (%s); expected %hd, got %hd\x80\n"),
 							leveltime, netconsole+1, player_names[netconsole],
 							consistancy[realstart%BACKUPTICS],
 							SHORT(netbuffer->u.clientpak.consistancy));
