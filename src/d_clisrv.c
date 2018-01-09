@@ -3844,6 +3844,9 @@ FILESTAMP
 			if (client)
 				break;
 
+			if (node == servernode && cv_extranotices.value)
+				CONS_Printf("\x82PT_TEXTCMD received from the server\x80\n");
+
 			if (netconsole < 0 || netconsole >= MAXPLAYERS)
 				Net_UnAcknowledgePacket(node);
 			else
