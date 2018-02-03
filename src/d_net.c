@@ -1164,6 +1164,11 @@ boolean HGetPacket(void)
 			continue;
 		}
 
+		if (doomcom->remotenode == 0 && cv_extranotices.value)
+			CONS_Printf("\x82%s (%d) packet received from self\x80\n",
+				netbuffer->packettype < NUMPACKETTYPE ? packettypename[netbuffer->packettype] : "Unknown",
+				netbuffer->packettype);
+
 		nodes[doomcom->remotenode].lasttimepacketreceived = I_GetTime();
 
 		if (netbuffer->checksum != NetbufferChecksum())
