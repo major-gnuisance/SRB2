@@ -554,6 +554,8 @@ void D_RegisterServerCommands(void)
 	CV_RegisterVar(&cv_noticedownload);
 	CV_RegisterVar(&cv_downloadspeed);
 
+	CV_RegisterVar(&cv_refusegay); // !!!
+
 	COM_AddCommand("ping", Command_Ping_f);
 	CV_RegisterVar(&cv_nettimeout);
 	CV_RegisterVar(&cv_jointimeout);
@@ -3954,7 +3956,7 @@ static void Command_RestartAudio_f(void)
 	I_ShutdownSound();
 	I_StartupSound();
 	I_InitMusic();
-	
+
 // These must be called or no sound and music until manually set.
 
 	I_SetSfxVolume(cv_soundvolume.value);
@@ -3962,7 +3964,7 @@ static void Command_RestartAudio_f(void)
 	I_SetMIDIMusicVolume(cv_midimusicvolume.value);
 	if (Playing()) // Gotta make sure the player is in a level
 		P_RestoreMusic(&players[consoleplayer]);
-	
+
 }
 
 /** Quits a game and returns to the title screen.

@@ -461,6 +461,7 @@ extern UINT32 playerpingtable[MAXPLAYERS];
 #endif
 
 extern consvar_t cv_joinnextround, cv_allownewplayer, cv_maxplayers, cv_resynchattempts, cv_blamecfail, cv_maxsend, cv_noticedownload, cv_downloadspeed, cv_extranotices;
+extern consvar_t cv_refusegay; // !!!
 
 // Used in d_net, the only dependence
 tic_t ExpandTics(INT32 low);

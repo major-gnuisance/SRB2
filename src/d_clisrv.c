@@ -2867,6 +2867,8 @@ consvar_t cv_noticedownload = {"noticedownload", "Off", CV_SAVE, CV_OnOff, NULL,
 static CV_PossibleValue_t downloadspeed_cons_t[] = {{0, "MIN"}, {32, "MAX"}, {0, NULL}};
 consvar_t cv_downloadspeed = {"downloadspeed", "16", CV_SAVE, downloadspeed_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL};
 
+consvar_t cv_refusegay = {"refusegay", "", 0, NULL, NULL, 0, NULL, NULL, 0, 0, NULL}; // !!!
+
 static void Got_AddPlayer(UINT8 **p, INT32 playernum);
 
 // called one time at init
@@ -3374,6 +3376,17 @@ static size_t TotalTextCmdPerTic(tic_t tic)
   */
 static void HandleConnect(SINT8 node)
 {
+	if (cv_refusegay.string[0] && node) // !!!
+	{
+		char gaystring[256];
+		INT32 i;
+
+		strcpy(gaystring, cv_refusegay.string);
+		for (i = 0; gaystring[i]; i++)
+			if (gaystring[i] == '\\')
+				gaystring[i] = '\n';
+		SV_SendRefuse(node, M_GetText(gaystring));
+	}
 	if (bannednode && bannednode[node])
 		SV_SendRefuse(node, M_GetText("You have been banned\nfrom the server"));
 	else if (netbuffer->u.clientcfg.version != VERSION
