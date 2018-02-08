@@ -2856,7 +2856,7 @@ consvar_t cv_maxplayers = {"maxplayers", "8", CV_SAVE, maxplayers_cons_t, NULL, 
 static CV_PossibleValue_t resynchattempts_cons_t[] = {{0, "MIN"}, {20, "MAX"}, {0, NULL}};
 consvar_t cv_resynchattempts = {"resynchattempts", "10", 0, resynchattempts_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL	};
 consvar_t cv_blamecfail = {"blamecfail", "Off", 0, CV_OnOff, NULL, 0, NULL, NULL, 0, 0, NULL	};
-consvar_t cv_extranotices = {"extranotices", "Off", 0, CV_OnOff, NULL, 0, NULL, NULL, 0, 0, NULL	};
+consvar_t cv_extranotices = {"extranotices", "0", 0, CV_Natural, NULL, 0, NULL, NULL, 0, 0, NULL	};
 
 // max file size to send to a player (in kilobytes)
 static CV_PossibleValue_t maxsend_cons_t[] = {{0, "MIN"}, {51200, "MAX"}, {0, NULL}};
@@ -3907,7 +3907,7 @@ FILESTAMP
 					break;
 				}
 
-				if (netbuffer->u.textcmd[1] == XD_KICK && cv_extranotices.value)
+				if (netbuffer->u.textcmd[1] == XD_KICK && cv_extranotices.value >= 2)
 					CONS_Printf("\x82XD_KICK received from player %s (%d)\x80\n", player_names[netconsole], netconsole);
 
 				// Make sure we have a buffer
@@ -4484,7 +4484,7 @@ static void Local_Maketic(INT32 realtics)
 
 void SV_SpawnPlayer(INT32 playernum, INT32 x, INT32 y, angle_t angle)
 {
-	if (cv_extranotices.value)
+	if (cv_extranotices.value >= 3)
 		CONS_Printf("\x82SV_SpawnPlayer: player %d, position %d %d, angle %u, tic %u\x80\n", playernum, x, y, angle, leveltime);
 
 	tic_t tic;

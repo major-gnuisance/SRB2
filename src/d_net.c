@@ -1164,7 +1164,7 @@ boolean HGetPacket(void)
 			continue;
 		}
 
-		if (doomcom->remotenode == 0 && cv_extranotices.value)
+		if (doomcom->remotenode == 0 && cv_extranotices.value >= 1)
 			CONS_Printf("\x82%s (%d) packet received from self\x80\n",
 				netbuffer->packettype < NUMPACKETTYPE ? packettypename[netbuffer->packettype] : "Unknown",
 				netbuffer->packettype);
