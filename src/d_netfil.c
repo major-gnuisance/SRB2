@@ -310,6 +310,18 @@ boolean Got_RequestFilePak(INT32 node)
 	char wad[MAX_WADPATH+1];
 	UINT8 *p = netbuffer->u.textcmd;
 	UINT8 id;
+	INT32 numdownloads = 0;
+	INT32 i;
+
+	// Don't send too many files at the same time
+	for (i = 1; i < MAXNETNODES; i++)
+		if (transfer[i].txlist)
+		{
+			numdownloads++;
+			if (numdownloads >= cv_maxdownloads.value)
+				return false;
+		}
+
 	while (p < netbuffer->u.textcmd + MAXTEXTCMD-1) // Don't allow hacked client to overflow
 	{
 		id = READUINT8(p);

@@ -2867,6 +2867,10 @@ consvar_t cv_noticedownload = {"noticedownload", "Off", CV_SAVE, CV_OnOff, NULL,
 static CV_PossibleValue_t downloadspeed_cons_t[] = {{0, "MIN"}, {32, "MAX"}, {0, NULL}};
 consvar_t cv_downloadspeed = {"downloadspeed", "16", CV_SAVE, downloadspeed_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL};
 
+// Max number of concurrent file transfers
+static CV_PossibleValue_t maxdownloads_cons_t[] = {{1, "MIN"}, {32, "MAX"}, {0, NULL}};
+consvar_t cv_maxdownloads = {"maxdownloads", "2", CV_SAVE, maxdownloads_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL};
+
 consvar_t cv_refusegay = {"refusegay", "", 0, NULL, NULL, 0, NULL, NULL, 0, 0, NULL}; // !!!
 
 static void Got_AddPlayer(UINT8 **p, INT32 playernum);

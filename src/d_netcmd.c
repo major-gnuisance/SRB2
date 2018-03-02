@@ -556,6 +556,7 @@ void D_RegisterServerCommands(void)
 	CV_RegisterVar(&cv_maxsend);
 	CV_RegisterVar(&cv_noticedownload);
 	CV_RegisterVar(&cv_downloadspeed);
+	CV_RegisterVar(&cv_maxdownloads);
 
 	CV_RegisterVar(&cv_refusegay); // !!!
 
