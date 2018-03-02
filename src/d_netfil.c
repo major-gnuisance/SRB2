@@ -927,6 +927,34 @@ void CloseNetFile(void)
 	Net_AbortPacketType(PT_FILEFRAGMENT);
 }
 
+void Command_Downloads_f(void)
+{
+	INT32 node;
+
+	for (node = 0; node < MAXNETNODES; node++)
+		if (transfer[node].txlist) // Node is downloading?
+		{
+			const char *name = transfer[node].txlist->id.filename;
+			UINT32 position = transfer[node].position / 1024;
+			UINT32 size = transfer[node].txlist->size / 1024;
+			char ratecolor;
+
+			name = &name[strlen(name) - nameonlylength(name)];
+			switch (4 * (position - 1) / size)
+			{
+				case 0: ratecolor = '\x85'; break;
+				case 1: ratecolor = '\x87'; break;
+				case 2: ratecolor = '\x82'; break;
+				case 3: ratecolor = '\x83'; break;
+				default: ratecolor = '\x80';
+			}
+
+			CONS_Printf("%2d  %c%s  ", node, ratecolor, name); // Node and file name
+			CONS_Printf("\x80%uK\x84/\x80%uK ", position, size); // Progress in kB
+			CONS_Printf("\x80(%c%u%%\x80)  ", ratecolor, 100 * position / size); // Progress in %
+			CONS_Printf("%s\n", I_GetNodeAddress(node)); // Address and newline
+		}
+}
 // Functions cut and pasted from Doomatic :)
 
 void nameonly(char *s)

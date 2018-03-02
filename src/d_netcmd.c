@@ -480,6 +480,8 @@ void D_RegisterServerCommands(void)
 #endif
 #endif
 
+	COM_AddCommand("downloads", Command_Downloads_f);
+
 	// for master server connection
 	AddMServCommands();
 
