@@ -481,6 +481,7 @@ void D_RegisterServerCommands(void)
 #endif
 
 	COM_AddCommand("downloads", Command_Downloads_f);
+	COM_AddCommand("stopdownload", Command_StopDownload_f);
 
 	// for master server connection
 	AddMServCommands();

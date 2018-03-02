@@ -955,6 +955,28 @@ void Command_Downloads_f(void)
 			CONS_Printf("%s\n", I_GetNodeAddress(node)); // Address and newline
 		}
 }
+
+void Command_StopDownload_f(void)
+{
+	INT32 node;
+
+	if (COM_Argc() < 2)
+	{
+		CONS_Printf("stopdownload <node>: stop sending files to a node\n");
+		return;
+	}
+
+	node = atoi(COM_Argv(1));
+
+	if (!(node >= 0 && node < MAXNETNODES && transfer[node].txlist))
+	{
+		CONS_Printf("No file transfer for this node.\n");
+		return;
+	}
+
+	Net_CloseConnection(node);
+}
+
 // Functions cut and pasted from Doomatic :)
 
 void nameonly(char *s)

@@ -75,6 +75,7 @@ void SV_AbortSendFiles(INT32 node);
 void CloseNetFile(void);
 
 void Command_Downloads_f(void);
+void Command_StopDownload_f(void);
 
 boolean fileexist(char *filename, time_t ptime);
 
