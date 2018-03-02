@@ -460,7 +460,7 @@ extern UINT32 realpingtable[MAXPLAYERS];
 extern UINT32 playerpingtable[MAXPLAYERS];
 #endif
 
-extern consvar_t cv_joinnextround, cv_allownewplayer, cv_maxplayers, cv_resynchattempts, cv_blamecfail, cv_maxsend, cv_noticedownload, cv_downloadspeed;
+extern consvar_t cv_joinnextround, cv_allownewplayer, cv_maxplayers, cv_resynchattempts, cv_blamecfail, cv_maxsend, cv_noticedownload, cv_downloadspeed, cv_maxdownloads;
 extern consvar_t cv_extranotices;
 extern consvar_t cv_refusegay; // !!!
 
