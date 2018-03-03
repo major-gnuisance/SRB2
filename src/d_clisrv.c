@@ -2848,6 +2848,21 @@ static void Got_KickCmd(UINT8 **p, INT32 playernum)
 		CL_RemovePlayer(pnum);
 }
 
+static void Command_Lag_f(void)
+{
+	INT32 i;
+
+	if (!server)
+		return;
+
+	for (i = 0; i < MAXPLAYERS; i++)
+		if (playernode[i] != UINT8_MAX)
+		{
+			tic_t lag = connectiontimeout - (freezetimeout[playernode[i]] - I_GetTime());
+			CONS_Printf("%.2d : %s\n %d ms\n", i, player_names[i], G_TicsToMilliseconds(lag));
+		}
+}
+
 consvar_t cv_allownewplayer = {"allowjoin", "On", CV_NETVAR, CV_OnOff, NULL, 0, NULL, NULL, 0, 0, NULL	};
 consvar_t cv_joinnextround = {"joinnextround", "Off", CV_NETVAR, CV_OnOff, NULL, 0, NULL, NULL, 0, 0, NULL}; /// \todo not done
 static CV_PossibleValue_t maxplayers_cons_t[] = {{2, "MIN"}, {32, "MAX"}, {0, NULL}};
@@ -2897,6 +2912,7 @@ void D_ClientServerInit(void)
 #ifdef _DEBUG
 	COM_AddCommand("numnodes", Command_Numnodes);
 #endif
+	COM_AddCommand("lag", Command_Lag_f);
 #endif
 
 	RegisterNetXCmd(XD_KICK, Got_KickCmd);
