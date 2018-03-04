@@ -944,12 +944,17 @@ void Command_Downloads_f(void)
 	INT32 node;
 
 	for (node = 0; node < MAXNETNODES; node++)
-		if (transfer[node].txlist) // Node is downloading?
+		if (transfer[node].txlist
+		&& transfer[node].txlist->ram == SF_FILE) // Node is downloading a file?
 		{
 			const char *name = transfer[node].txlist->id.filename;
-			UINT32 position = transfer[node].position / 1024;
-			UINT32 size = transfer[node].txlist->size / 1024;
+			UINT32 position = transfer[node].position;
+			UINT32 size = transfer[node].txlist->size;
 			char ratecolor;
+
+			// Avoid division by zero errors
+			if (!size)
+				size = 1;
 
 			name = &name[strlen(name) - nameonlylength(name)];
 			switch (4 * (position - 1) / size)
@@ -962,7 +967,7 @@ void Command_Downloads_f(void)
 			}
 
 			CONS_Printf("%2d  %c%s  ", node, ratecolor, name); // Node and file name
-			CONS_Printf("\x80%uK\x84/\x80%uK ", position, size); // Progress in kB
+			CONS_Printf("\x80%uK\x84/\x80%uK ", position / 1024, size / 1024); // Progress in kB
 			CONS_Printf("\x80(%c%u%%\x80)  ", ratecolor, 100 * position / size); // Progress in %
 			CONS_Printf("%s\n", I_GetNodeAddress(node)); // Address and newline
 		}
