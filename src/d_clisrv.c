@@ -3406,7 +3406,7 @@ static void HandleConnect(SINT8 node)
 				gaystring[i] = '\n';
 		SV_SendRefuse(node, M_GetText(gaystring));
 	}
-	if (bannednode && bannednode[node])
+	else if (bannednode && bannednode[node])
 		SV_SendRefuse(node, M_GetText("You have been banned\nfrom the server"));
 	else if (netbuffer->u.clientcfg.version != VERSION
 		|| netbuffer->u.clientcfg.subversion != SUBVERSION)
