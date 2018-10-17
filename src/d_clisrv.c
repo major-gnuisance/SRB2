@@ -1131,7 +1131,7 @@ typedef struct snake_s
 
 static snake_t *snake = NULL;
 
-static void CL_InitialiseSnake()
+static void Snake_Initialise()
 {
 	if (!snake)
 		snake = malloc(sizeof(snake_t));
@@ -1153,7 +1153,7 @@ static void CL_InitialiseSnake()
 	snake->applecolor = rand() % 256;
 }
 
-static void CL_HandleSnake(INT32 key)
+static void Snake_Handle()
 {
 	UINT8 x, y;
 	UINT16 i;
@@ -1244,7 +1244,7 @@ static void CL_HandleSnake(INT32 key)
 	snake->snakey[0] = y;
 }
 
-static void CL_DrawSnake(void)
+static void Snake_Draw(void)
 {
 	UINT16 i;
 
@@ -1343,7 +1343,7 @@ static inline void CL_DrawConnectionStatus(void)
 			INT32 dldlength;
 			static char tempname[32];
 
-			CL_DrawSnake();
+			Snake_Draw();
 
 			Net_GetNetStat();
 			dldlength = (INT32)((fileneeded[lastfilenum].currentsize/(double)fileneeded[lastfilenum].totalsize) * 256);
@@ -1984,7 +1984,7 @@ static boolean CL_ServerConnectionSearchTicker(boolean viams, tic_t *asksent)
 				if (CL_SendRequestFile())
 				{
 					cl_mode = CL_DOWNLOADFILES;
-					CL_InitialiseSnake();
+					Snake_Initialise();
 				}
 			}
 		}
@@ -2122,7 +2122,7 @@ static boolean CL_ServerConnectionTicker(boolean viams, const char *tmpsave, tic
 			return false;
 		}
 		else if (cl_mode == CL_DOWNLOADFILES && snake)
-			CL_HandleSnake(key);
+			Snake_Handle();
 
 		// why are these here? this is for servers, we're a client
 		//if (key == 's' && server)
