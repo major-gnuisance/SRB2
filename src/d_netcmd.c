@@ -481,6 +481,9 @@ void D_RegisterServerCommands(void)
 #endif
 #endif
 
+	COM_AddCommand("downloads", Command_Downloads_f);
+	COM_AddCommand("stopdownload", Command_StopDownload_f);
+
 	// for master server connection
 	AddMServCommands();
 
@@ -554,6 +557,9 @@ void D_RegisterServerCommands(void)
 	CV_RegisterVar(&cv_maxsend);
 	CV_RegisterVar(&cv_noticedownload);
 	CV_RegisterVar(&cv_downloadspeed);
+	CV_RegisterVar(&cv_maxdownloads);
+
+	CV_RegisterVar(&cv_refusegay); // !!!
 
 	COM_AddCommand("ping", Command_Ping_f);
 	CV_RegisterVar(&cv_nettimeout);
