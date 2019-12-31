@@ -346,7 +346,7 @@ static CV_PossibleValue_t chattime_cons_t[] = {{5, "MIN"}, {999, "MAX"}, {0, NUL
 consvar_t cv_chattime = {"chattime", "8", CV_SAVE, chattime_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL};
 
 // chatwidth
-static CV_PossibleValue_t chatwidth_cons_t[] = {{64, "MIN"}, {150, "MAX"}, {0, NULL}};
+static CV_PossibleValue_t chatwidth_cons_t[] = {{64, "MIN"}, {300, "MAX"}, {0, NULL}};
 consvar_t cv_chatwidth = {"chatwidth", "128", CV_SAVE, chatwidth_cons_t, NULL, 0, NULL, NULL, 0, 0, NULL};
 
 // chatheight
