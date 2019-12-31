@@ -930,7 +930,7 @@ void Command_Downloads_f(void)
 
 			CONS_Printf("%2d  %c%s  ", node, ratecolor, name); // Node and file name
 			CONS_Printf("\x80%uK\x84/\x80%uK ", position / 1024, size / 1024); // Progress in kB
-			CONS_Printf("\x80(%c%u%%\x80)  ", ratecolor, 100 * position / size); // Progress in %
+			CONS_Printf("\x80(%c%u%%\x80)  ", ratecolor, (UINT32)(100.0 * position / size)); // Progress in %
 			CONS_Printf("%s\n", I_GetNodeAddress(node)); // Address and newline
 		}
 }
