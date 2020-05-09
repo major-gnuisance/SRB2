@@ -3440,8 +3440,6 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 		}
 	}
 
-	rw.ffloortextureslide = 0;
-
 #ifdef ESLOPE
 	if (rw.ffloorslopeskew)
 	{
