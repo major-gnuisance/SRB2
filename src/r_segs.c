@@ -63,6 +63,9 @@ static fixed_t *maskedtextureheight = NULL;
 static fixed_t *thicksidefrac = NULL;
 #endif
 
+#define CLAMPMAX INT32_MAX
+#define CLAMPMIN (-INT32_MAX) // This is not INT32_MIN on purpose! INT32_MIN makes the drawers freak out.
+
 // R_ExpandPlaneY
 //
 // A simple function to modify a vsplane's top and bottom for a particular column
@@ -2358,7 +2361,7 @@ static void R_Render2sidedMultiPatchColumn(column_t *column)
 	INT32 topscreen, bottomscreen;
 
 	topscreen = sprtopscreen; // + spryscale*column->topdelta;  topdelta is 0 for the wall
-	bottomscreen = topscreen + spryscale * rw.column2s_length;
+	bottomscreen = topscreen + spryscale * lengthcol;
 
 	dc_yl = (sprtopscreen+FRACUNIT-1)>>FRACBITS;
 	dc_yh = (bottomscreen-1)>>FRACBITS;
@@ -2388,13 +2391,6 @@ static void R_Render2sidedMultiPatchColumn(column_t *column)
 		else
 			colfunc();
 	}
-}
-
-// quick wrapper for R_DrawFlippedMaskedColumn so it can be set as a colfunc_2s value
-// uses column2s_length for texture->height as above
-static void R_DrawFlippedMaskedSegColumn(column_t *column)
-{
-	R_DrawFlippedMaskedColumn(column, rw.column2s_length);
 }
 
 //
@@ -2762,8 +2758,8 @@ void R_RenderMaskedSegRange(drawseg_t *ds, INT32 x1, INT32 x2)
 	{
 		if (textures[texnum]->flip & 2) // vertically flipped?
 		{
-			rw.colfunc_2s = R_DrawFlippedMaskedSegColumn;
-			rw.column2s_length = textures[texnum]->height;
+			rw.colfunc_2s = R_DrawFlippedMaskedColumn;
+			lengthcol = textures[texnum]->height;
 		}
 		else
 			rw.colfunc_2s = R_DrawMaskedColumn; // render the usual 2sided single-patch packed texture
@@ -2771,7 +2767,7 @@ void R_RenderMaskedSegRange(drawseg_t *ds, INT32 x1, INT32 x2)
 	else
 	{
 		rw.colfunc_2s = R_Render2sidedMultiPatchColumn; // render multipatch with no holes (no post_t info)
-		rw.column2s_length = textures[texnum]->height;
+		lengthcol = textures[texnum]->height;
 	}
 
 	// Setup lighting based on the presence/lack-of 3D floors.
@@ -2876,7 +2872,7 @@ static void R_DrawRepeatMaskedColumn(column_t *col)
 static void R_DrawRepeatFlippedMaskedColumn(column_t *col)
 {
 	do {
-		R_DrawFlippedMaskedColumn(col, rw.column2s_length);
+		R_DrawFlippedMaskedColumn(col);
 		sprtopscreen += dc_texheight*spryscale;
 	} while (sprtopscreen < sprbotscreen);
 }
@@ -2906,7 +2902,9 @@ static void R_RenderThickSegLoop(void)
 		if (maskedtexturecol[dc_x] != INT16_MAX)
 		{
 #ifdef ESLOPE
-			if (rw.ffloortextureslide) { // skew FOF walls
+			// skew FOF walls
+			if (rw.ffloorslopeskew)
+			{
 				if (oldx != -1)
 				{
 					fixed_t thickfrac = (maskedtexturecol[oldx]-maskedtexturecol[dc_x])<<FRACBITS;
@@ -2920,8 +2918,6 @@ static void R_RenderThickSegLoop(void)
 			// Calculate bounds
 			// clamp the values if necessary to avoid overflows and rendering glitches caused by them
 #ifdef ESLOPE
-			#define CLAMPMAX INT32_MAX
-			#define CLAMPMIN (-INT32_MAX) // This is not INT32_MIN on purpose! INT32_MIN makes the drawers freak out.
 			if      (rw.top_frac > (INT64)CLAMPMAX) sprtopscreen = windowtop = CLAMPMAX;
 			else if (rw.top_frac > (INT64)CLAMPMIN) sprtopscreen = windowtop = (fixed_t)rw.top_frac;
 			else                                 sprtopscreen = windowtop = CLAMPMIN;
@@ -2932,7 +2928,7 @@ static void R_RenderThickSegLoop(void)
 			rw.top_frac += rw.top_step;
 			rw.bottom_frac += rw.bottom_step;
 #else
-			sprtopscreen = windowtop = (centeryfrac - FixedMul((dc_texturemid - offsetvalue), spryscale));
+			sprtopscreen = windowtop = (centeryfrac - FixedMul((dc_texturemid - rw.offsetvalue), spryscale));
 			sprbotscreen = windowbottom = FixedMul(*pfloor->topheight - *pfloor->bottomheight, spryscale) + sprtopscreen;
 #endif
 
@@ -3302,7 +3298,6 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 {
 	INT32 texnum;
 
-	fixed_t         offsetvalue = 0;
 	INT32           range;
 #ifndef ESLOPE
 	fixed_t         lheight;
@@ -3310,7 +3305,6 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 	line_t          *newline = NULL;
 #ifdef ESLOPE
 	// skew FOF walls with slopes?
-	boolean	      slopeskew = false;
 	pslope_t      *skewslope = NULL;
 #endif
 
@@ -3397,52 +3391,59 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 		rw.left_bottom = P_GetZAt(*pfloor->b_slope, ds->leftpos.x, ds->leftpos.y) - viewz;
 	else
 		rw.left_bottom = *pfloor->bottomheight - viewz;
+
 	skewslope = *pfloor->t_slope; // skew using top slope by default
+	rw.ffloorslopeskew = false;
+
 	if (newline)
 	{
 		if (newline->flags & ML_DONTPEGTOP)
-			slopeskew = true;
+			rw.ffloorslopeskew = true;
 	}
 	else if (pfloor->master->flags & ML_DONTPEGTOP)
-		slopeskew = true;
+		rw.ffloorslopeskew = true;
 
-	if (slopeskew)
+	if (rw.ffloorslopeskew)
 		dc_texturemid = rw.left_top;
 	else
 #endif
-	dc_texturemid = *pfloor->topheight - viewz;
+		dc_texturemid = *pfloor->topheight - viewz;
+
+	rw.offsetvalue = 0;
 
 	if (newline)
 	{
-		offsetvalue = sides[newline->sidenum[0]].rowoffset;
+		rw.offsetvalue = sides[newline->sidenum[0]].rowoffset;
 		if (newline->flags & ML_DONTPEGBOTTOM)
 		{
 #ifdef ESLOPE
 			skewslope = *pfloor->b_slope; // skew using bottom slope
-			if (slopeskew)
+			if (rw.ffloorslopeskew)
 				dc_texturemid = rw.left_bottom;
 			else
 #endif
-			offsetvalue -= *pfloor->topheight - *pfloor->bottomheight;
+				rw.offsetvalue -= *pfloor->topheight - *pfloor->bottomheight;
 		}
 	}
 	else
 	{
-		offsetvalue = sides[pfloor->master->sidenum[0]].rowoffset;
+		rw.offsetvalue = sides[pfloor->master->sidenum[0]].rowoffset;
 		if (curline->linedef->flags & ML_DONTPEGBOTTOM)
 		{
 #ifdef ESLOPE
 			skewslope = *pfloor->b_slope; // skew using bottom slope
-			if (slopeskew)
+			if (rw.ffloorslopeskew)
 				dc_texturemid = rw.left_bottom;
 			else
 #endif
-			offsetvalue -= *pfloor->topheight - *pfloor->bottomheight;
+				rw.offsetvalue -= *pfloor->topheight - *pfloor->bottomheight;
 		}
 	}
 
+	rw.ffloortextureslide = 0;
+
 #ifdef ESLOPE
-	if (slopeskew)
+	if (rw.ffloorslopeskew)
 	{
 		angle_t lineangle = R_PointToAngle2(curline->v1->x, curline->v1->y, curline->v2->x, curline->v2->y);
 
@@ -3454,11 +3455,12 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 	}
 #endif
 
-	dc_texturemid += offsetvalue;
+	dc_texturemid += rw.offsetvalue;
 
 	// Texture must be cached before setting colfunc_2s,
 	// otherwise texture[texnum]->holes may be false when it shouldn't be
 	R_CheckTextureCache(texnum);
+
 	//faB: handle case where multipatch texture is drawn on a 2sided wall, multi-patch textures
 	//     are not stored per-column with post info anymore in Doom Legacy
 	if (textures[texnum]->holes)
@@ -3466,7 +3468,7 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 		if (textures[texnum]->flip & 2) // vertically flipped?
 		{
 			rw.colfunc_2s = R_DrawRepeatFlippedMaskedColumn;
-			rw.column2s_length = textures[texnum]->height;
+			lengthcol = textures[texnum]->height;
 		}
 		else
 			rw.colfunc_2s = R_DrawRepeatMaskedColumn; // render the usual 2sided single-patch packed texture
@@ -3474,7 +3476,7 @@ void R_RenderThickSideRange(drawseg_t *ds, INT32 x1, INT32 x2, ffloor_t *pfloor)
 	else
 	{
 		rw.colfunc_2s = R_Render2sidedMultiPatchColumn;        //render multipatch with no holes (no post_t info)
-		rw.column2s_length = textures[texnum]->height;
+		lengthcol = textures[texnum]->height;
 	}
 
 #ifdef ESLOPE
