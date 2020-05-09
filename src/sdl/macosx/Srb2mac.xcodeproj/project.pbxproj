@@ -107,7 +107,7 @@
 		67259E2F18D26D5700F02971 /* rings.dta in Resources */ = {isa = PBXBuildFile; fileRef = 67259E2C18D26D5700F02971 /* rings.dta */; };
 		67259E3018D26D5700F02971 /* srb2.srb in Resources */ = {isa = PBXBuildFile; fileRef = 67259E2D18D26D5700F02971 /* srb2.srb */; };
 		67259E3218D26DD200F02971 /* music.dta in Resources */ = {isa = PBXBuildFile; fileRef = 1E44AE440B67CBE800BAD059 /* music.dta */; };
-		67259E3318D26DD300F02971 /* player.dta in Resources */ = {isa = PBXBuildFile; fileRef = 67A1F91813FAD026009FA3E5 /* player.dta */; };
+		67259E3318D26DD300F02971 /* player_next.dta in Resources */ = {isa = PBXBuildFile; fileRef = 67A1F91813FAD026009FA3E5 /* player_next.dta */; };
 		67259E3518D26DD500F02971 /* zones.dta in Resources */ = {isa = PBXBuildFile; fileRef = 6766C0AE11B057E50065F389 /* zones.dta */; };
 		676BB5200E0DE06100C95963 /* m_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 676BB51C0E0DE06100C95963 /* m_queue.c */; };
 		676BB5220E0DE06100C95963 /* p_polyobj.c in Sources */ = {isa = PBXBuildFile; fileRef = 676BB51E0E0DE06100C95963 /* p_polyobj.c */; };
@@ -386,7 +386,7 @@
 		676BB51D0E0DE06100C95963 /* m_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_queue.h; path = ../../m_queue.h; sourceTree = SOURCE_ROOT; };
 		676BB51E0E0DE06100C95963 /* p_polyobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = p_polyobj.c; path = ../../p_polyobj.c; sourceTree = SOURCE_ROOT; };
 		676BB51F0E0DE06100C95963 /* p_polyobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = p_polyobj.h; path = ../../p_polyobj.h; sourceTree = SOURCE_ROOT; };
-		67A1F91813FAD026009FA3E5 /* player.dta */ = {isa = PBXFileReference; lastKnownFileType = text; name = player.dta; path = ../../../bin/Resources/player.dta; sourceTree = SOURCE_ROOT; };
+		67A1F91813FAD026009FA3E5 /* player_next.dta */ = {isa = PBXFileReference; lastKnownFileType = text; name = player_next.dta; path = ../../../bin/Resources/player_next.dta; sourceTree = SOURCE_ROOT; };
 		67B2071C1180FA8200E93654 /* vid_copy.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = vid_copy.s; path = ../../vid_copy.s; sourceTree = SOURCE_ROOT; };
 		67B83BCB14F57EAB00AAAE4E /* lapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lapi.c; path = ../../blua/lapi.c; sourceTree = SOURCE_ROOT; };
 		67B83BCC14F57EAB00AAAE4E /* lapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lapi.h; path = ../../blua/lapi.h; sourceTree = SOURCE_ROOT; };
@@ -867,7 +867,7 @@
 				67259E2B18D26D5700F02971 /* patch.dta */,
 				67259E2C18D26D5700F02971 /* rings.dta */,
 				67259E2D18D26D5700F02971 /* srb2.srb */,
-				67A1F91813FAD026009FA3E5 /* player.dta */,
+				67A1F91813FAD026009FA3E5 /* player_next.dta */,
 				6766C0AE11B057E50065F389 /* zones.dta */,
 				1E44AE440B67CBE800BAD059 /* music.dta */,
 				1E44AE4B0B67CBE800BAD059 /* srb2.wad */,
@@ -1025,7 +1025,7 @@
 				67259E2F18D26D5700F02971 /* rings.dta in Resources */,
 				67259E3018D26D5700F02971 /* srb2.srb in Resources */,
 				67259E3218D26DD200F02971 /* music.dta in Resources */,
-				67259E3318D26DD300F02971 /* player.dta in Resources */,
+				67259E3318D26DD300F02971 /* player_next.dta in Resources */,
 				67259E3518D26DD500F02971 /* zones.dta in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

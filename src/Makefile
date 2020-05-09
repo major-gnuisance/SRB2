@@ -85,7 +85,7 @@
 # SRB2 data files
 D_DIR?=../bin/Resources
 D_FILES=$(D_DIR)/srb2.pk3 \
-	$(D_DIR)/player.dta \
+	$(D_DIR)/player_next.dta \
 	$(D_DIR)/zones.pk3 \
 	$(D_DIR)/music.dta \
 
