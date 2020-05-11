@@ -1189,7 +1189,7 @@ typedef struct snake_s
 
 static snake_t *snake = NULL;
 
-static void Snake_Initialise()
+static void Snake_Initialise(void)
 {
 	if (!snake)
 		snake = malloc(sizeof(snake_t));
@@ -1211,7 +1211,7 @@ static void Snake_Initialise()
 	snake->applecolor = rand() % 256;
 }
 
-static void Snake_Handle()
+static void Snake_Handle(void)
 {
 	UINT8 x, y;
 	UINT16 i;

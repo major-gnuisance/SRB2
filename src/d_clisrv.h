@@ -518,7 +518,7 @@ extern tic_t servermaxping;
 extern consvar_t cv_allownewplayer, cv_joinnextround, cv_maxplayers, cv_joindelay, cv_rejointimeout;
 extern consvar_t cv_resynchattempts, cv_blamecfail;
 extern consvar_t cv_maxsend, cv_noticedownload, cv_downloadspeed;
-extern cv_maxdownloads;
+extern consvar_t cv_maxdownloads;
 extern consvar_t cv_extranotices;
 extern consvar_t cv_refusegay; // !!!
 
