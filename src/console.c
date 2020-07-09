@@ -753,6 +753,7 @@ boolean CON_Responder(event_t *ev)
 
 	const char *cmd = "";
 	INT32 key;
+	INT32 raw_key;
 
 	if (chat_on)
 		return false;
@@ -765,7 +766,8 @@ boolean CON_Responder(event_t *ev)
 		return false;
 	}
 
-	key = ev->data1;
+	raw_key = ev->data1;
+	key = ev->data2;
 
 	// check for console toggle key
 	if (ev->type != ev_console)
@@ -773,7 +775,7 @@ boolean CON_Responder(event_t *ev)
 		if (modeattacking || metalrecording)
 			return false;
 
-		if (key == gamecontrol[gc_console][0] || key == gamecontrol[gc_console][1])
+		if (raw_key == gamecontrol[gc_console][0] || raw_key == gamecontrol[gc_console][1])
 		{
 			if (consdown) // ignore repeat
 				return true;
@@ -785,9 +787,9 @@ boolean CON_Responder(event_t *ev)
 		// check other keys only if console prompt is active
 		if (!consoleready && key < NUMINPUTS) // metzgermeister: boundary check!!
 		{
-			if (! menuactive && bindtable[key])
+			if (! menuactive && bindtable[raw_key])
 			{
-				COM_BufAddText(bindtable[key]);
+				COM_BufAddText(bindtable[raw_key]);
 				COM_BufAddText("\n");
 				return true;
 			}
